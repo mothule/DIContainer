@@ -1,7 +1,7 @@
-public class DIContainer {
-    public typealias Factory = (DIContainer) -> Any
+public class Container {
+    public typealias Factory = (Container) -> Any
     
-    public static var shared: DIContainer = .init()
+    public static var shared: Container = .init()
     
     private var instances: [String: Factory] = [:]
     
@@ -45,11 +45,11 @@ public class DIContainer {
         return result
     }
     
-    public func merging(_ other: DIContainer) -> DIContainer {
-        DIContainer(instances: instances.merging(other.instances) { _, rhs in rhs })
+    public func merging(_ other: Container) -> Container {
+        Container(instances: instances.merging(other.instances) { _, rhs in rhs })
     }
 }
 
 public protocol DIContainerInjectable {
-    static func diContainer() -> DIContainer
+    static func diContainer() -> Container
 }

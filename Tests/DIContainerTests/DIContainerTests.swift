@@ -7,7 +7,7 @@ import XCTest
 // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
 final class DIContainerTests: XCTestCase {
     func test_usecase_using_shared() throws {
-        DIContainer.shared.register(APIService.self) { _ in
+        Container.shared.register(APIService.self) { _ in
             APIServiceImpl.shared
         }
         .register(DatabaseService.self) { container in
@@ -19,7 +19,7 @@ final class DIContainerTests: XCTestCase {
                 database: container.resolve(DatabaseService.self)
             )
         }
-        let instance = DIContainer.shared.resolve(ClassService.self)
+        let instance = Container.shared.resolve(ClassService.self)
         XCTAssertIdentical(APIServiceImpl.shared as AnyObject, instance.api as AnyObject)
     }
     
@@ -31,7 +31,7 @@ final class DIContainerTests: XCTestCase {
     }
     
     func test_merging() {
-        let c = DIContainer().register(String.self, factory: { _ in "good" })
+        let c = Container().register(String.self, factory: { _ in "good" })
             .merging(.init().register(String.self, factory: { _ in "bad" }))
         XCTAssertEqual(c.resolve(String.self), "bad")
     }
@@ -66,9 +66,9 @@ private class AnyViewController: NSObject {
 }
 
 extension AnyViewController: DIContainerInjectable {
-    static func diContainer() -> DIContainer {
-        let container: DIContainer = {
-            DIContainer()
+    static func diContainer() -> Container {
+        let container: Container = {
+            Container()
                 .register(APIService.self) { _ in
                     APIServiceImpl.shared
                 }
