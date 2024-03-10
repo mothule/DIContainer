@@ -5,10 +5,10 @@ public class Container {
     
     private var instances: [String: Factory] = [:]
     
-    init() {
+    public init() {
     }
     
-    init(instances: [String : Factory]) {
+    public init(instances: [String : Factory]) {
         self.instances = instances
     }
     
