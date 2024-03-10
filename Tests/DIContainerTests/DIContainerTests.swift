@@ -6,8 +6,8 @@ import XCTest
 // Defining Test Cases and Test Methods
 // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
 final class DIContainerTests: XCTestCase {
-    func test_usecase_using_root() throws {
-        DIContainer.root.register(APIService.self) { _ in
+    func test_usecase_using_shared() throws {
+        DIContainer.shared.register(APIService.self) { _ in
             APIServiceImpl.shared
         }
         .register(DatabaseService.self) { container in
@@ -19,11 +19,11 @@ final class DIContainerTests: XCTestCase {
                 database: container.resolve(DatabaseService.self)
             )
         }
-        let instance = DIContainer.root.resolve(ClassService.self)
+        let instance = DIContainer.shared.resolve(ClassService.self)
         XCTAssertIdentical(APIServiceImpl.shared as AnyObject, instance.api as AnyObject)
     }
     
-    func test_usecase_not_using_root() throws {
+    func test_usecase_not_using_shared() throws {
         let vc = AnyViewController.diContainer()
             .register(DatabaseService.self) { _ in DatabaseServiceFake() }
             .resolve(AnyViewController.self)

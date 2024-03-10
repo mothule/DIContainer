@@ -1,7 +1,7 @@
 public class DIContainer {
     public typealias Factory = (DIContainer) -> Any
     
-    public static var root: DIContainer = .init()
+    public static var shared: DIContainer = .init()
     
     private var instances: [String: Factory] = [:]
     
