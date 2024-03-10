@@ -1,15 +1,35 @@
 public class DIContainer {
-    public static var shared: DIContainer = .init()
-    
     public typealias Factory = (DIContainer) -> Any
     
+    public static var root: DIContainer = .init()
+    
     private var instances: [String: Factory] = [:]
+    
+    init() {
+    }
+    
+    init(instances: [String : Factory]) {
+        self.instances = instances
+    }
     
     @discardableResult
     public func register<T>(_ type: T.Type, factory: @escaping Factory) -> Self {
         let key = String(describing: type)
         instances[key] = factory
         return self
+    }
+    
+    public func resolve<T>(_ type: T.Type) -> T {
+        let key = String(describing: type)
+        
+        guard let factory = instances[key] else {
+            fatalError()
+        }
+        
+        guard let result = factory(self) as? T else {
+            fatalError()
+        }
+        return result
     }
     
     public func resolve<T>() -> T {
@@ -24,5 +44,12 @@ public class DIContainer {
         }
         return result
     }
+    
+    public func merging(_ other: DIContainer) -> DIContainer {
+        DIContainer(instances: instances.merging(other.instances) { _, rhs in rhs })
+    }
 }
 
+public protocol DIContainerInjectable {
+    static func diContainer() -> DIContainer
+}
